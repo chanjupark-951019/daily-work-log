@@ -1,0 +1,19 @@
+# 일일 업무 로그 템플릿
+# 파일명: YYYY-MM-DD.yaml (예: 2026-04-28.yaml)
+# category는 반드시 _categories.yaml에 있는 값 사용
+
+date: 2026-MM-DD
+weekday: 월   # 월/화/수/목/금/토/일
+week_of_month: "2026년 M월 N주차"
+
+entries:
+  - category: "카테고리명"
+    done:
+      - "오늘 한 일 한 줄 요약"
+      - "두 번째 항목이 있으면 여기에"
+    evidence:                      # 선택
+      - "c:/path/to/file.xlsx"
+
+  - category: "다른 카테고리명"
+    done:
+      - "..."

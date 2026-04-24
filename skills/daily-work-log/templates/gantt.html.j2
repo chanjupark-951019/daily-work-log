@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>{{ page_title }}</title>
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    color: #000;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 297mm;
+    height: 210mm;
+    padding: 9mm 10mm 8mm 10mm;
+    page-break-after: always;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4mm;
+    flex-shrink: 0;
+  }
+  .title {
+    font-size: 16pt;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .author {
+    font-size: 10pt;
+    font-weight: 700;
+  }
+
+  table.gantt {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 9pt;
+    flex: 1;
+  }
+
+  table.gantt col.col-task { width: 10%; }
+  table.gantt col.col-due  { width: 6%; }
+  table.gantt col.col-day  { width: 16.8%; }
+
+  table.gantt thead th {
+    background: #f2f2f2;
+    color: #000;
+    font-weight: 700;
+    text-align: center;
+    padding: 2mm 1mm;
+    border: 0.5px solid #000;
+    font-size: 10pt;
+  }
+  table.gantt thead th .date {
+    display: block;
+    font-weight: 400;
+    font-size: 8pt;
+    margin-top: 0.4mm;
+    color: #000;
+  }
+  table.gantt tbody td {
+    border: 0.5px solid #808080;
+    vertical-align: top;
+    padding: 1.8mm 2.2mm;
+    line-height: 1.35;
+  }
+  table.gantt tbody td.task-cell {
+    text-align: center;
+    font-weight: 700;
+    background: #f2f2f2;
+    vertical-align: middle;
+    font-size: 9.5pt;
+  }
+  table.gantt tbody td.due-cell {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 700;
+    background: #f2f2f2;
+    font-size: 9pt;
+  }
+
+  ul.items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.items li {
+    padding-left: 2.8mm;
+    position: relative;
+    margin-bottom: 0.4mm;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  ul.items li:last-child { margin-bottom: 0; }
+  ul.items li::before {
+    content: "§";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: Wingdings, sans-serif;
+    font-size: 6.5pt;
+  }
+</style>
+</head>
+<body>
+
+{% for sheet in sheets %}
+<div class="page">
+  <div class="title-bar">
+    <div class="title">{{ sheet.title }}</div>
+    <div class="author">{{ author or '' }}</div>
+  </div>
+
+  <table class="gantt">
+    <colgroup>
+      <col class="col-task">
+      <col class="col-due">
+      <col class="col-day">
+      <col class="col-day">
+      <col class="col-day">
+      <col class="col-day">
+      <col class="col-day">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>업무</th>
+        <th>일정</th>
+        <th>월<span class="date">{{ sheet.dates.mon }}</span></th>
+        <th>화<span class="date">{{ sheet.dates.tue }}</span></th>
+        <th>수<span class="date">{{ sheet.dates.wed }}</span></th>
+        <th>목<span class="date">{{ sheet.dates.thu }}</span></th>
+        <th>금<span class="date">{{ sheet.dates.fri }}</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in sheet.rows %}
+      <tr>
+        <td class="task-cell">{{ row.task }}</td>
+        <td class="due-cell">{{ row.due or '' }}</td>
+        {% for day in ['mon','tue','wed','thu','fri'] %}
+        <td>
+          {% if row[day] %}
+          <ul class="items">
+            {% for item in row[day] %}<li>{{ item }}</li>{% endfor %}
+          </ul>
+          {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %}
+
+</body>
+</html>

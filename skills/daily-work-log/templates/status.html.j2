@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>주간업무현황 - {{ week_label }}</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    color: #000;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 10mm 11mm 8mm 11mm;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4mm;
+    flex-shrink: 0;
+  }
+  .title {
+    font-size: 16pt;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .week {
+    font-size: 10pt;
+    font-weight: 700;
+  }
+
+  .stack {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.8mm;
+    min-height: 0;
+  }
+
+  table.cat {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 8.5pt;
+  }
+  table.cat td {
+    border: 0.5px solid #808080;
+    padding: 1mm 2.5mm;
+    vertical-align: middle;
+    line-height: 1.25;
+  }
+  table.cat td.label {
+    width: 20mm;
+    background: #f2f2f2;
+    text-align: center;
+    font-weight: 700;
+    font-size: 8.5pt;
+  }
+  table.cat td.value {
+    vertical-align: top;
+    padding-top: 1.2mm;
+    padding-bottom: 1.2mm;
+  }
+  table.cat tr.task-row td {
+    border-top: 1.2px solid #000;
+    font-weight: 700;
+    vertical-align: middle;
+  }
+  table.cat tr.task-row td.value {
+    font-size: 9.5pt;
+  }
+  table.cat tr.last-row td {
+    border-bottom: 1.2px solid #000;
+  }
+
+  ul.items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.items li {
+    padding-left: 2.8mm;
+    position: relative;
+    margin-bottom: 0.2mm;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  ul.items li:last-child { margin-bottom: 0; }
+  ul.items li::before {
+    content: "§";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: Wingdings, sans-serif;
+    font-size: 7pt;
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 5mm;
+    right: 12mm;
+    font-size: 8.5pt;
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <div class="title">주간 업무 현황 _ 기획</div>
+    <div class="week">'{{ year_short }}년 {{ month }}월 {{ week_num }}주차</div>
+  </div>
+
+  <div class="stack">
+    {% for cat in categories %}
+    {% set has_plan = cat.plan and cat.plan|length > 0 %}
+    <table class="cat">
+      <tr class="task-row">
+        <td class="label">업무명</td>
+        <td class="value">{{ cat.name }}</td>
+      </tr>
+      <tr>
+        <td class="label">개요</td>
+        <td class="value">{{ cat.overview }}</td>
+      </tr>
+      <tr {% if not has_plan %}class="last-row"{% endif %}>
+        <td class="label">실적</td>
+        <td class="value">
+          <ul class="items">
+            {% for item in cat.done %}<li>{{ item }}</li>{% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% if has_plan %}
+      <tr class="last-row">
+        <td class="label">계획</td>
+        <td class="value">
+          <ul class="items">
+            {% for item in cat.plan %}<li>{{ item }}</li>{% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endif %}
+    </table>
+    {% endfor %}
+  </div>
+
+  <div class="footer">{{ author or '' }}</div>
+</div>
+
+</body>
+</html>
