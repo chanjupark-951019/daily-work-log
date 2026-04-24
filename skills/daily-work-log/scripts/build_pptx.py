@@ -101,9 +101,11 @@ def _set_cell_text(cell, text_or_lines, *, size=Pt(9), bold=False, color=COLOR_B
     first.alignment = align
 
     def _add_text(p, txt):
+        if bullet:
+            br = p.add_run()
+            _set_run(br, '· ', size=Pt(size.pt + 2), bold=True, color=color)
         run = p.add_run()
-        prefix = '· ' if bullet else ''
-        _set_run(run, prefix + txt, size=size, bold=bold, color=color)
+        _set_run(run, txt, size=size, bold=bold, color=color)
 
     _add_text(first, lines[0])
     for line in lines[1:]:
