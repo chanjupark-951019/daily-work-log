@@ -167,7 +167,8 @@ def main():
     ap.add_argument('--monday', required=True, help='해당 주 월요일, YYYY-MM-DD')
     ap.add_argument('--week-label', required=True, help='예: 4월 4주차')
     ap.add_argument('--plans', help='차주 계획 override JSON (선택)')
-    ap.add_argument('--author', default='', help='작성자 이름(파일명에 포함, 선택)')
+    ap.add_argument('--author', default=os.environ.get('DAILY_WORK_LOG_AUTHOR', ''),
+                    help='작성자 이름(파일명·footer에 포함). 기본값은 env DAILY_WORK_LOG_AUTHOR.')
     args = ap.parse_args()
 
     monday = datetime.strptime(args.monday, '%Y-%m-%d')
